@@ -1,12 +1,11 @@
 package com.projects.MovieTicketBookingSystem.controller;
 
-import com.projects.MovieTicketBookingSystem.dao.UserRepository;
-import com.projects.MovieTicketBookingSystem.dto.JwtRequest;
-import com.projects.MovieTicketBookingSystem.dto.JwtResponse;
-import com.projects.MovieTicketBookingSystem.entity.User;
-import com.projects.MovieTicketBookingSystem.managerImpl.UserPrincipalService;
-import com.projects.MovieTicketBookingSystem.security.JwtHelper;
-import jakarta.validation.Valid;
+import java.net.URI;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -18,14 +17,22 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import com.projects.MovieTicketBookingSystem.dao.UserRepository;
+import com.projects.MovieTicketBookingSystem.dto.JwtRequest;
+import com.projects.MovieTicketBookingSystem.dto.JwtResponse;
+import com.projects.MovieTicketBookingSystem.entity.User;
+import com.projects.MovieTicketBookingSystem.managerImpl.UserPrincipalService;
+import com.projects.MovieTicketBookingSystem.security.JwtHelper;
+
+import jakarta.validation.Valid;
 
 @RestController
 public class UserController {

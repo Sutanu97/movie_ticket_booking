@@ -103,6 +103,17 @@
 <!--			<artifactId>spring-security-jwt</artifactId>-->
 <!--			<version>1.0.11.RELEASE</version>-->
 <!--		</dependency>-->
+		<!-- https://mvnrepository.com/artifact/org.redisson/redisson-spring-boot-starter -->
+		<dependency>
+			<groupId>org.redisson</groupId>
+			<artifactId>redisson-spring-boot-starter</artifactId>
+			<version>3.31.0</version>
+		</dependency>
+		<!-- Kafka -->
+		<dependency>
+			<groupId>org.springframework.kafka</groupId>
+			<artifactId>spring-kafka</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>

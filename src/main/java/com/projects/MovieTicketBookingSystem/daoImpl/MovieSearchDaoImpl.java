@@ -30,7 +30,6 @@ public class MovieSearchDaoImpl implements MovieSearchDao {
     @Override
     public List<Movie> getMovies(String city, LocalDateTime lowerBound, LocalDateTime upperBound) {
         LOGGER.debug("In method getMovies");
-        List<Movie> movies = new ArrayList<>();
         StringBuilder query = new StringBuilder("select movie from Show s where s.multiplex.city = :city ") ;
         if(lowerBound != null && upperBound != null){
             query.append("and s.startTime >= :startTime and s.endTime <= :endTime");

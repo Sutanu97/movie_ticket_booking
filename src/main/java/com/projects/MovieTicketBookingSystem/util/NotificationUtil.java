@@ -6,6 +6,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.mail.*;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
+import org.springframework.scheduling.annotation.Async;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,19 +27,13 @@ public class NotificationUtil {
     @Value("${mail.config.filepath}")
     private String mailConfigFilePath;
 
-    private static String staticMailConfigFilePath;
-
-    @PostConstruct
-    public void init(){
-        staticMailConfigFilePath = mailConfigFilePath;
-    }
-
-    public static void sendConfirmationEmail(String orderId, Show show, String recipientEmailId, Set<String> seatsBooked) throws IOException, MessagingException {
+    @Async
+    public void sendConfirmationEmail(String orderId, Show show, String recipientEmailId, Set<String> seatsBooked) throws IOException, MessagingException {
         LOGGER.debug("In method sendConfirmationEmail");
 //        Properties mailConfigs = FetchCredentials.loadMailConfigs();
         Properties mailProperties = new Properties();
 //        Properties cp = FetchCredentials.loadCredentialsProperties();
-        FileReader reader = new FileReader(staticMailConfigFilePath);
+        FileReader reader = new FileReader(mailConfigFilePath);
         mailProperties.load(reader);
         Session mailSession = Session.getInstance(mailProperties, new Authenticator() {
             @Override
@@ -58,7 +53,7 @@ public class NotificationUtil {
         Transport.send(message);
     }
 
-    private static String getMailBody(String orderId, Show show, Set<String> seatsBooked) {
+    private String getMailBody(String orderId, Show show, Set<String> seatsBooked) {
         LOGGER.debug("In method getMailBody");
         StringBuffer body = new StringBuffer();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");

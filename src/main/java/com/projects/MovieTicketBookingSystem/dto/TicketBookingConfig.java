@@ -11,6 +11,12 @@ public class TicketBookingConfig implements Serializable {
     private Show show;
     private String seats;
     private Integer cost;
+    // Razorpay callback fields — sent by frontend after payment, used for server-side verification
+    private String razorpayPaymentId;
+    private String razorpaySignature;
+
+    // No-arg constructor required for Jackson deserialization
+    public TicketBookingConfig() {}
 
     public TicketBookingConfig(String orderId, Show show, String seats) {
         this.orderId = orderId;
@@ -37,4 +43,13 @@ public class TicketBookingConfig implements Serializable {
     public void setCost() {
         cost = seats.split(" ").length * TicketBookingConstants.TICKET_PRICE/100;
     }
+
+    public String getRazorpayPaymentId() {
+        return razorpayPaymentId;
+    }
+
+    public String getRazorpaySignature() {
+        return razorpaySignature;
+    }
 }
+

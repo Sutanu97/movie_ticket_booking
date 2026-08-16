@@ -18,7 +18,6 @@ public class TicketBookingConstants {
     public static final String RAZORPAY_ORDER = "razorpay_order";
     public static final String EMAIL_FROM = "bhattacharyasutanu97@gmail.com";
     public static final int TICKET_PRICE = 10000;
-    public static final Object LOCK = new Object();
     public static final int NUMBER_OF_THREADS = 5;
     public static final String RAZORPAY_AMOUNT = "amount";
 }

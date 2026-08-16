@@ -15,6 +15,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import jakarta.persistence.LockModeType;
+import jakarta.persistence.TypedQuery;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -41,16 +43,19 @@ public class TicketBookingDaoImpl implements TicketBookingDao {
     @Override
     @Transactional
     public void reserveSeats(Integer showId, Set<String> seats) {
-        LOGGER.debug("In method seatsAfterReservation");
-        Set<String> availableSeats = getAvailableSeats(showId);
-        availableSeats.removeAll(seats);
-        String query = "update SeatAvailability sa set " +
-                " seatsLeft = :seatsLeft" +
-                " where show.pkMovieShowId = :showId";
-        Query jpql = entityManager.createQuery(query);
-        jpql.setParameter("seatsLeft", String.join(" ",availableSeats));
+        LOGGER.debug("In method reserveSeats");
+        String query = "select sa from SeatAvailability sa where sa.show.pkMovieShowId = :showId";
+        TypedQuery<SeatAvailability> jpql = entityManager.createQuery(query, SeatAvailability.class);
         jpql.setParameter("showId", showId);
-        jpql.executeUpdate();
+        jpql.setLockMode(LockModeType.PESSIMISTIC_WRITE);
+        SeatAvailability sa = jpql.getSingleResult();
+        
+        Set<String> availableSeats = Arrays.stream(sa.getSeatsLeft().split(" "))
+                .filter(s -> !s.trim().isEmpty())
+                .collect(Collectors.toSet());
+        availableSeats.removeAll(seats);
+        sa.setSeatsLeft(String.join(" ", availableSeats));
+        entityManager.merge(sa);
     }
 
     @Override
@@ -125,15 +130,18 @@ public class TicketBookingDaoImpl implements TicketBookingDao {
     @Transactional
     public void reallocateSeats(Integer showId, Set<String> seats) {
         LOGGER.debug("In method reallocateSeats");
-        Set<String> availableSeats = getAvailableSeats(showId);
-        availableSeats.addAll(seats);
-        String query = "update SeatAvailability sa set " +
-                " seatsLeft = :seatsLeft" +
-                " where show.pkMovieShowId = :showId";
-        Query jpql = entityManager.createQuery(query);
-        jpql.setParameter("seatsLeft", String.join(" ",availableSeats));
+        String query = "select sa from SeatAvailability sa where sa.show.pkMovieShowId = :showId";
+        TypedQuery<SeatAvailability> jpql = entityManager.createQuery(query, SeatAvailability.class);
         jpql.setParameter("showId", showId);
-        jpql.executeUpdate();
+        jpql.setLockMode(LockModeType.PESSIMISTIC_WRITE);
+        SeatAvailability sa = jpql.getSingleResult();
+        
+        Set<String> availableSeats = Arrays.stream(sa.getSeatsLeft().split(" "))
+                .filter(s -> !s.trim().isEmpty())
+                .collect(Collectors.toSet());
+        availableSeats.addAll(seats);
+        sa.setSeatsLeft(String.join(" ", availableSeats));
+        entityManager.merge(sa);
     }
 
     @Override
